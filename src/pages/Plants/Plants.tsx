@@ -16,13 +16,13 @@ export const Plants = () => {
     queryFn: getDevices,
   });
 
-  console.log(data);
   return (
     <Stack margin="0 43px">
       <Text fontSize="60px">My Plants</Text>
       {data?.map((device) => {
         return (
           <CustomCard
+            key={device.id}
             name={device.nombre}
             image={device.imagen_url}
             link={`${ROUTES.PLANTS.DETAIL(device.id)}`}
