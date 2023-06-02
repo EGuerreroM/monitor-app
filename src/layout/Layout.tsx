@@ -13,7 +13,7 @@ const Layout = () => {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Image src="images/logo.png" alt="logo" width={139} />
+        <Image src="/images/logo.png" alt="logo" width={139} />
       </Stack>
       <Box width="100%">
         <Outlet />
