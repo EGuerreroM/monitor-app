@@ -1,12 +1,25 @@
-import { ChakraBaseProvider } from '@chakra-ui/react';
-import reactLogo from './assets/react.svg';
+import { ChakraBaseProvider, Stack, extendTheme } from '@chakra-ui/react';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { Outlet } from 'react-router-dom';
+
+const theme = extendTheme({
+  styles: {
+    global: {
+      body: {
+        bg: 'gray.50',
+      },
+    },
+  },
+});
+
+const queryClient = new QueryClient();
 
 function App() {
   return (
-    <ChakraBaseProvider>
-      <div>
-        <img src={reactLogo} alt="react logo" />
-      </div>
+    <ChakraBaseProvider theme={theme}>
+      <QueryClientProvider client={queryClient}>
+        <Outlet />
+      </QueryClientProvider>
     </ChakraBaseProvider>
   );
 }
