@@ -6,7 +6,7 @@ import { useQuery } from 'react-query';
 import CustomCard from '../../components/Card/CustomCard';
 
 const getDevices = async () => {
-  const response = await baseApi.get<IDevice[]>(ENDPOINTS.DEVICES);
+  const response = await baseApi.get<IDevice[]>(ENDPOINTS.DEVICES.LIST);
   return response.data;
 };
 
@@ -24,6 +24,7 @@ export const Plants = () => {
           <CustomCard
             key={device.id}
             name={device.nombre}
+            description={device.planta_descripcion}
             image={device.imagen_url}
             link={`${ROUTES.PLANTS.DETAIL(device.id)}`}
           />

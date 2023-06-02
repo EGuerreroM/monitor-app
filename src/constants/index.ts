@@ -7,6 +7,9 @@ export const ROUTES = {
 };
 
 export const ENDPOINTS = {
-  DEVICES: '/dispositivos',
+  DEVICES: {
+    LIST: '/dispositivos',
+    DETAIL: (id: string) => `/dispositivos/${id}`,
+  },
   PLANTS: '/tipos-de-planta',
 };

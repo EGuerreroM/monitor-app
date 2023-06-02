@@ -3,11 +3,7 @@ import { Outlet } from 'react-router-dom';
 
 const Layout = () => {
   return (
-    <Stack
-      justifyContent="center"
-      alignItems="center"
-      maxW={1440}
-      margin=" 0 auto">
+    <Stack justifyContent="center" alignItems="center">
       <Stack
         sx={{
           justifyContent: 'center',

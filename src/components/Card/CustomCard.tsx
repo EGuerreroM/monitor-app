@@ -3,7 +3,6 @@ import {
   CardBody,
   Heading,
   CardFooter,
-  Button,
   Image,
   Card,
   Text,
@@ -15,17 +14,19 @@ import { Link as RouterLink } from 'react-router-dom';
 type CustomCardProps = {
   name: string;
   image: string;
+  description: string;
   link?: string;
 };
 
 const CustomCard = (props: CustomCardProps) => {
-  const { name, image, link } = props;
+  const { name, image, link, description } = props;
   return (
     <Card
       direction={{ base: 'column', sm: 'row' }}
       overflow="hidden"
       variant="outline"
-      maxW={600}>
+      backgroundColor="green.500"
+      maxW={550}>
       <Image
         objectFit="cover"
         maxW={{ base: '100%', sm: '200px' }}
@@ -35,16 +36,25 @@ const CustomCard = (props: CustomCardProps) => {
 
       <Stack>
         <CardBody>
-          <Heading size="md">{name}</Heading>
+          <Heading size="xl" color="white">
+            {name}
+          </Heading>
+          <Text color="white">{description}</Text>
         </CardBody>
+        {link && (
+          <CardFooter>
+            <Link
+              backgroundColor="gray.50"
+              borderRadius="4px"
+              size="sm"
+              padding="12px 16px"
+              as={RouterLink}
+              to={link}>
+              View Detail
+            </Link>
+          </CardFooter>
+        )}
       </Stack>
-      {link && (
-        <CardFooter>
-          <Link colorScheme="blue" size="sm" as={RouterLink} to={link}>
-            View Detail
-          </Link>
-        </CardFooter>
-      )}
     </Card>
   );
 };
