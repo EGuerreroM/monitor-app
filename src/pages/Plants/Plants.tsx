@@ -1,4 +1,4 @@
-import { Image, Stack, Text } from '@chakra-ui/react';
+import { Stack, Text } from '@chakra-ui/react';
 import baseApi from '../../services/baseApi';
 import { ENDPOINTS, ROUTES } from '../../constants';
 import { IDevice } from '../../interfaces';

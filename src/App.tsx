@@ -1,4 +1,4 @@
-import { ChakraBaseProvider, Stack, extendTheme } from '@chakra-ui/react';
+import { ChakraBaseProvider, extendTheme } from '@chakra-ui/react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { Outlet } from 'react-router-dom';
 

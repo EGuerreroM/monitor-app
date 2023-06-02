@@ -1,4 +1,4 @@
-import { Button, Image, Link, Stack } from '@chakra-ui/react';
+import { Image, Link, Stack } from '@chakra-ui/react';
 import { Link as ReactRouterLink } from 'react-router-dom';
 import { ROUTES } from '../../constants';
 

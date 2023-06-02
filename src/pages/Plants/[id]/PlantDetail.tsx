@@ -1,19 +1,11 @@
-import {
-  Box,
-  Button,
-  Heading,
-  Image,
-  Select,
-  Stack,
-  Text,
-} from '@chakra-ui/react';
+import { Button, Heading, Image, Select, Stack, Text } from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 
 import useWebSocket from 'react-use-websocket';
 import baseApi from '../../../services/baseApi';
-import { ENDPOINTS, ROUTES } from '../../../constants';
+import { ENDPOINTS } from '../../../constants';
 import { IDevice, IPlant } from '../../../interfaces';
 import { AxiosError } from 'axios';
 
