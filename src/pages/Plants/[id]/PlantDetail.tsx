@@ -1,4 +1,12 @@
-import { Box, Button, Heading, Image, Stack, Text } from '@chakra-ui/react';
+import {
+  Box,
+  Button,
+  Heading,
+  Image,
+  Select,
+  Stack,
+  Text,
+} from '@chakra-ui/react';
 import { useEffect, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
@@ -6,7 +14,7 @@ import { useParams } from 'react-router-dom';
 import useWebSocket from 'react-use-websocket';
 import baseApi from '../../../services/baseApi';
 import { ENDPOINTS, ROUTES } from '../../../constants';
-import { IDevice } from '../../../interfaces';
+import { IDevice, IPlant } from '../../../interfaces';
 import { AxiosError } from 'axios';
 
 const getDetail = async (id: string) => {
@@ -16,14 +24,28 @@ const getDetail = async (id: string) => {
   return response.data;
 };
 
+const getPlants = async () => {
+  const response = await baseApi<IPlant[]>(ENDPOINTS.PLANTS);
+  return response.data;
+};
+
 const PlantDetail = () => {
   const { id } = useParams();
   const [humidity, setHumidity] = useState('0');
   const [temperature, setTemperature] = useState('0');
+  const [plant, setPlant] = useState('');
 
   const { data, isLoading, error, isSuccess } = useQuery<IDevice, AxiosError>({
     queryKey: ['device', id],
     queryFn: () => getDetail(id as string),
+    onSuccess: (data) => {
+      setPlant(data.planta);
+    },
+  });
+
+  const { data: plantsData } = useQuery<IPlant[], AxiosError>({
+    queryKey: ['plants'],
+    queryFn: getPlants,
   });
 
   const { lastJsonMessage, sendJsonMessage } = useWebSocket(
@@ -43,7 +65,7 @@ const PlantDetail = () => {
   const handleClick = () => {
     sendJsonMessage({
       evento: 'cambio_planta',
-      planta: 'Snake Plant',
+      planta: plant,
     });
   };
 
@@ -73,7 +95,23 @@ const PlantDetail = () => {
           minH={400}>
           <Heading color="white">{data.nombre}</Heading>
           <Text color="white">{data.planta_descripcion}</Text>
-          <Button onClick={handleClick}>Send Message</Button>
+          <Text color="white" fontSize="2xl" fontWeight="semibold">
+            Plant type
+          </Text>
+          <Stack maxW={600} direction="row" alignItems="center">
+            <Select
+              backgroundColor="gray.50"
+              maxW={200}
+              value={plant}
+              onChange={(event) => setPlant(event.target.value)}>
+              {plantsData?.map((plant) => (
+                <option key={plant.tipo} value={plant.tipo}>
+                  {plant.tipo}
+                </option>
+              ))}
+            </Select>
+            <Button onClick={handleClick}>Change plant type</Button>
+          </Stack>
         </Stack>
       </Stack>
       <Stack

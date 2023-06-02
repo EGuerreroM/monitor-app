@@ -7,5 +7,5 @@ export interface IDevice {
   riego_activado: boolean;
   imagen_url: string;
   usuario: number;
-  planta: number;
+  planta: string;
 }
