@@ -76,7 +76,7 @@ const PlantDetail = () => {
     if (lastJsonMessage.evento === 'actualizar_monitor') {
       setHumidity(lastJsonMessage.humedad_medida);
       setTemperature(lastJsonMessage.temperatura_medida);
-      setPump(lastJsonMessage.riego_activado === 1 ? 'ON' : 'OFF');
+      setPump(lastJsonMessage.riego_activado);
     }
   }, [lastJsonMessage]);
 
@@ -185,7 +185,7 @@ const PlantDetail = () => {
                   objectiveHumidity && humidity
                     ? Number(humidity) < objectiveHumidity
                       ? 'red.500'
-                      : 'gree'
+                      : 'green.500'
                     : 'green.500'
                 }>
                 Humidity
