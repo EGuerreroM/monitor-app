@@ -1,5 +1,13 @@
-import { Button, Heading, Image, Select, Stack, Text } from '@chakra-ui/react';
-import { useEffect, useState } from 'react';
+import {
+  Button,
+  Heading,
+  Image,
+  Select,
+  Stack,
+  Text,
+  useToast,
+} from '@chakra-ui/react';
+import { useEffect, useMemo, useState } from 'react';
 import { useQuery } from 'react-query';
 import { useParams } from 'react-router-dom';
 
@@ -23,9 +31,11 @@ const getPlants = async () => {
 
 const PlantDetail = () => {
   const { id } = useParams();
-  const [humidity, setHumidity] = useState('0');
-  const [temperature, setTemperature] = useState('0');
+  const [humidity, setHumidity] = useState<string | null>(null);
+  const [temperature, setTemperature] = useState<string | null>(null);
+  const [pump, setPump] = useState<string | null>(null);
   const [plant, setPlant] = useState('');
+  const toast = useToast();
 
   const { data, isLoading, error, isSuccess } = useQuery<IDevice, AxiosError>({
     queryKey: ['device', id],
@@ -49,8 +59,8 @@ const PlantDetail = () => {
         closeEvent.isTrusted;
         return true;
       },
-      onMessage: (event: WebSocketEventMap['message']) =>
-        console.log(event.data),
+      // onMessage: (event: WebSocketEventMap['message']) =>
+      //   console.log(event.data),
     }
   );
 
@@ -66,8 +76,36 @@ const PlantDetail = () => {
     if (lastJsonMessage.evento === 'actualizar_monitor') {
       setHumidity(lastJsonMessage.humedad_medida);
       setTemperature(lastJsonMessage.temperatura_medida);
+      setPump(lastJsonMessage.riego_activado === 1 ? 'ON' : 'OFF');
     }
   }, [lastJsonMessage]);
+
+  useEffect(() => {
+    if (!lastJsonMessage) return;
+
+    if (lastJsonMessage.evento === 'planta_cambiada_feedback') {
+      toast({
+        title: 'Plant type changed.',
+        description: 'The plant type has been changed successfully.',
+        status: 'success',
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  }, [lastJsonMessage, toast]);
+
+  const currentPlanttype = useMemo(
+    () => plantsData?.find((element) => element.tipo === data?.planta),
+    [data?.planta, plantsData]
+  );
+  const currentMaxTemp = useMemo(
+    () => currentPlanttype?.temperatura_maxima,
+    [currentPlanttype?.temperatura_maxima]
+  );
+  const currentMaxHumidity = useMemo(
+    () => currentPlanttype?.humedad_maxima,
+    [currentPlanttype?.humedad_maxima]
+  );
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -82,11 +120,15 @@ const PlantDetail = () => {
       <Stack alignItems="flex-end" width="100%" minH="400px">
         <Stack
           padding="1rem"
-          width="50%"
+          width={['100%', '100%', '50%', '50%', '50%']}
           backgroundColor="green.500"
           minH={400}>
-          <Heading color="white">{data.nombre}</Heading>
-          <Text color="white">{data.planta_descripcion}</Text>
+          <Heading color="white" fontSize={['lg', 'lg', 'lg', '6xl', '8xl']}>
+            {data.nombre}
+          </Heading>
+          <Text color="white" fontSize={['sm', 'md', 'md', 'md', 'xl']}>
+            {data.planta_descripcion}
+          </Text>
           <Text color="white" fontSize="2xl" fontWeight="semibold">
             Plant type
           </Text>
@@ -95,6 +137,7 @@ const PlantDetail = () => {
               backgroundColor="gray.50"
               maxW={200}
               value={plant}
+              fontSize={['sm', 'md', 'md', 'md', 'xl']}
               onChange={(event) => setPlant(event.target.value)}>
               {plantsData?.map((plant) => (
                 <option key={plant.tipo} value={plant.tipo}>
@@ -102,7 +145,11 @@ const PlantDetail = () => {
                 </option>
               ))}
             </Select>
-            <Button onClick={handleClick}>Change plant type</Button>
+            <Button
+              onClick={handleClick}
+              fontSize={['sm', 'md', 'md', 'md', 'xl']}>
+              Change plant type
+            </Button>
           </Stack>
         </Stack>
       </Stack>
@@ -117,27 +164,64 @@ const PlantDetail = () => {
         backgroundColor="white">
         <Image
           src={data.imagen_url}
-          width={500}
+          width={[300, 300, 300, 300, 500]}
           top="-350px"
           left="50px"
           position="absolute"
+          display={['none', 'none', 'block']}
         />
-        <Stack width="50%">
+        <Stack width={['100%', '100%', '50%', '50%', '50%']} padding={6}>
           <Stack direction="row" gap={6}>
             <Stack>
-              <Text fontSize="8xl" fontWeight="semibold">
-                {humidity}%
+              <Text
+                fontSize={['lg', 'lg', 'lg', '6xl', '8xl']}
+                fontWeight="semibold">
+                {humidity ?? '-'}%
               </Text>
-              <Text fontSize="4xl" fontWeight="semibold">
+              <Text
+                fontSize={['smaller', 'smaller', 'smaller', '2xl', '4xl']}
+                fontWeight="semibold"
+                color={
+                  currentMaxHumidity && humidity
+                    ? Number(humidity) >= currentMaxHumidity
+                      ? 'red.500'
+                      : 'gree'
+                    : 'green.500'
+                }>
                 Humidity
               </Text>
             </Stack>
+
             <Stack>
-              <Text fontSize="8xl" fontWeight="semibold">
-                {temperature}°C
+              <Text
+                fontSize={['lg', 'lg', 'lg', '6xl', '8xl']}
+                fontWeight="semibold">
+                {temperature ?? '-'}°C
               </Text>
-              <Text fontSize="4xl" fontWeight="semibold">
+              <Text
+                fontSize={['smaller', 'smaller', 'smaller', '2xl', '4xl']}
+                fontWeight="semibold"
+                color={
+                  currentMaxTemp && temperature
+                    ? Number(temperature) >= currentMaxTemp
+                      ? 'red.500'
+                      : 'gree'
+                    : 'green.500'
+                }>
                 Temperature
+              </Text>
+            </Stack>
+            <Stack>
+              <Text
+                fontSize={['lg', 'lg', 'lg', '6xl', '8xl']}
+                fontWeight="semibold">
+                {pump ?? '-'}
+              </Text>
+              <Text
+                fontSize={['smaller', 'smaller', 'smaller', '2xl', '4xl']}
+                fontWeight="semibold"
+                color="green.500">
+                Pump
               </Text>
             </Stack>
           </Stack>
