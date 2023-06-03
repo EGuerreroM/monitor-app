@@ -76,7 +76,7 @@ const PlantDetail = () => {
     if (lastJsonMessage.evento === 'actualizar_monitor') {
       setHumidity(lastJsonMessage.humedad_medida);
       setTemperature(lastJsonMessage.temperatura_medida);
-      setPump(lastJsonMessage.riego_activado);
+      setPump(lastJsonMessage.riego_activado ? 'ON' : 'OFF');
     }
   }, [lastJsonMessage]);
 
@@ -159,7 +159,6 @@ const PlantDetail = () => {
         justifyContent="flex-end"
         minH={200}
         width="100%"
-        top={-50}
         borderRadius="24px"
         backgroundColor="white">
         <Image
