@@ -59,8 +59,8 @@ const PlantDetail = () => {
         closeEvent.isTrusted;
         return true;
       },
-      // onMessage: (event: WebSocketEventMap['message']) =>
-      //   console.log(event.data),
+      onMessage: (event: WebSocketEventMap['message']) =>
+        console.log(event.data),
     }
   );
 
@@ -102,9 +102,9 @@ const PlantDetail = () => {
     () => currentPlanttype?.temperatura_maxima,
     [currentPlanttype?.temperatura_maxima]
   );
-  const currentMaxHumidity = useMemo(
-    () => currentPlanttype?.humedad_maxima,
-    [currentPlanttype?.humedad_maxima]
+  const objectiveHumidity = useMemo(
+    () => currentPlanttype?.humedad_objetivo,
+    [currentPlanttype?.humedad_objetivo]
   );
 
   if (isLoading) {
@@ -182,8 +182,8 @@ const PlantDetail = () => {
                 fontSize={['smaller', 'smaller', 'smaller', '2xl', '4xl']}
                 fontWeight="semibold"
                 color={
-                  currentMaxHumidity && humidity
-                    ? Number(humidity) >= currentMaxHumidity
+                  objectiveHumidity && humidity
+                    ? Number(humidity) < objectiveHumidity
                       ? 'red.500'
                       : 'gree'
                     : 'green.500'
